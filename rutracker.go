@@ -7,11 +7,12 @@ import (
 	"net/url"
 	"strings"
 	"strconv"
+	"html"
 )
 
 var (
 	ErrBadResponse = errors.New("bad response")
-	ErrNotFound = errors.New("object not found")
+	ErrNotFound    = errors.New("object not found")
 )
 
 type Client struct {
@@ -63,7 +64,7 @@ type FullTopic struct {
 	ID       string
 	Hash     string
 	ForumID  string
-	PosterID string
+	AuthorID string
 	Size     int
 	Seeders  int
 	Title    string
@@ -73,7 +74,7 @@ type respFullTopicList struct {
 	Result map[string]*struct {
 		InfoHash       string `json:"info_hash"`        //"info_hash": "658EDAB6AF0B424E62FEFEC0E39DBE2AC55B9AE3",
 		ForumId        int    `json:"forum_id"`         //"forum_id": 9,
-		PosterId       int    `json:"poster_id"`        //"poster_id": 670,
+		AuthorID       int    `json:"poster_id"`        //"poster_id": 670,
 		Size           int    `json:"size"`             //"size": 5020938240,
 		RegTime        int    `json:"reg_time"`         //"reg_time": 1112928696,
 		TorStatus      int    `json:"tor_status"`       //"tor_status": 2,
@@ -82,7 +83,6 @@ type respFullTopicList struct {
 		SeederLastSeen int    `json:"seeder_last_seen"` //"seeder_last_seen": 1509589261
 	} `json:"result"`
 }
-
 
 func (c *Client) GetForumTree() ([]Forum, error) {
 	u := "http://api.rutracker.org/v1/static/cat_forum_tree"
@@ -211,11 +211,11 @@ func (c *Client) GetFullTopic(topicIDs []string) ([]FullTopic, error) {
 		res = append(res, FullTopic{
 			ID:       topicID,
 			Seeders:  info.Seeders,
-			Title:    info.TopicTitle,
+			Title:    html.UnescapeString(info.TopicTitle),
 			Size:     info.Size,
 			ForumID:  strconv.Itoa(info.ForumId),
 			Hash:     info.InfoHash,
-			PosterID: strconv.Itoa(info.PosterId),
+			AuthorID: strconv.Itoa(info.AuthorID),
 		})
 	}
 
@@ -261,7 +261,7 @@ func (c *Client) GetFullTopic(topicIDs []string) ([]FullTopic, error) {
 //			Size:     info.Size,
 //			ForumID:  strconv.Itoa(info.ForumId),
 //			Hash:     info.InfoHash,
-//			PosterID: strconv.Itoa(info.PosterId),
+//			AuthorID: strconv.Itoa(info.AuthorID),
 //		})
 //	}
 //
