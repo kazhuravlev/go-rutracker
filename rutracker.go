@@ -8,6 +8,7 @@ import (
 	"strings"
 	"strconv"
 	"html"
+	"github.com/kazhuravlev/go-rutracker/parser"
 )
 
 var (
@@ -220,6 +221,35 @@ func (c *Client) GetFullTopic(topicIDs []string) ([]FullTopic, error) {
 	}
 
 	return res, nil
+}
+
+func (c *Client) GetTopicMeta(topicID string) (*parser.TopicMeta, error) {
+	query := url.Values{}
+	query.Set("t", topicID)
+	u := "https://rutracker.org/forum/viewtopic.php?" + query.Encode()
+
+	req, err := http.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, ErrBadResponse
+	}
+
+	p, err := parser.NewParser()
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return p.ParseTopicPage(resp.Body)
 }
 
 //func (c *Client) GetTorrentFile(topicIDs []string) ([]FullTopic, error) {
