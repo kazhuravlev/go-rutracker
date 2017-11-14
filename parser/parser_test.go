@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"testing"
 	"github.com/kazhuravlev/go-rutracker/parser"
+
 )
 
 func TestParser_ParseCatalog(t *testing.T) {
@@ -47,6 +48,6 @@ func TestParser_ParseTopicPage(t *testing.T) {
 	assert.Nil(t, err)
 	require.NotNil(t, res)
 
-	exp := []byte(`<tr><td class="poster_info td1 hide-for-print"><a id="73528050">`)
-	assert.Equal(t, exp, res[:len(exp)])
+	exp := `<tr><td class="poster_info td1 hide-for-print"><a id="73528050">`
+	assert.Equal(t, exp, string(res)[:len(exp)])
 }

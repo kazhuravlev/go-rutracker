@@ -9,7 +9,8 @@ import (
 	"path"
 	"strconv"
 	"strings"
-	"bytes"
+	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/text/transform"
 )
 
 var (
@@ -205,11 +206,11 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 	}
 
 	htmlText, err := topicBody.Html()
-	if  err != nil {
+	if err != nil {
 		return nil, err
 	}
 
-	res.RawPage.Body = bytes.NewBufferString(htmlText)
+	res.RawPage.Body = transform.NewReader(strings.NewReader(htmlText), charmap.Windows1251.NewDecoder())
 
 	return &res, nil
 }
