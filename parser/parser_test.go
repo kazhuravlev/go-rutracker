@@ -42,4 +42,11 @@ func TestParser_ParseTopicPage(t *testing.T) {
 	assert.Equal(t, "magnet:THIS_IS_TEST_LINK", topic.MagnetLink)
 	assert.Equal(t, "843231", topic.KinopoiskID)
 	assert.Equal(t, "tt4176370", topic.IMDbID)
+
+	res, err := ioutil.ReadAll(topic.Body)
+	assert.Nil(t, err)
+	require.NotNil(t, res)
+
+	exp := []byte("<!DOCTYPE html><!-- saved from url=(0051)https://rutracker.org/forum/viewtopic.php?t=5429672 -->")
+	assert.Equal(t, exp, res[:len(exp)])
 }

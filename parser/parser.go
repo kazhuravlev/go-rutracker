@@ -9,6 +9,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"bytes"
 )
 
 var (
@@ -105,7 +106,12 @@ func (p *Parser) ParseTopicList(r io.Reader) ([]TopicPreview, error) {
 	return res, nil
 }
 
+type RawPage struct {
+	Body io.Reader
+}
+
 type TopicMeta struct {
+	RawPage
 	TopicPreview
 	PosterURL   string
 	MagnetLink  string
@@ -114,14 +120,19 @@ type TopicMeta struct {
 }
 
 func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
-	doc, err := goquery.NewDocumentFromReader(r)
+	rawPage := RawPage{}
+	buf := bytes.NewBuffer(nil)
+	rawPage.Body = buf
+
+	tee := io.TeeReader(r, buf)
+	document, err := goquery.NewDocumentFromReader(tee)
 	if err != nil {
 		return nil, err
 	}
 
 	var res TopicMeta
 	{
-		metaTable := doc.Find(".attach.bordered.med").First()
+		metaTable := document.Find(".attach.bordered.med").First()
 		magnetLinkQ := metaTable.Find(".magnet-link").First()
 		if magnetLinkQ.Length() > 0 {
 			magnetLink, exists := magnetLinkQ.Attr("href")
@@ -133,7 +144,7 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 
 	// изображение/постер. если есть
 	{
-		posterQ := doc.Find("var.postImg.postImgAligned.img-right").First()
+		posterQ := document.Find("var.postImg.postImgAligned.img-right").First()
 		if posterQ.Length() > 0 {
 			posterURL, exists := posterQ.Attr("title")
 			if exists {
@@ -147,7 +158,7 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 
 	// идентификатор кинопоиска через шильдик КП
 	{
-		kinopoiskIDQ := doc.Find("var[title*=kinopoisk\\.ru\\/rating]").First()
+		kinopoiskIDQ := document.Find("var[title*=kinopoisk\\.ru\\/rating]").First()
 		if kinopoiskIDQ.Length() > 0 {
 			kinopoiskImgURL, exists := kinopoiskIDQ.Attr("title")
 			if exists {
@@ -165,7 +176,7 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 
 	// идентификатор кинопоиска через ссылку на страницу КП
 	if len(res.KinopoiskID) == 0 {
-		kinopoiskIDQ := doc.Find("a[href*=kinopoisk\\.ru\\/film]").First()
+		kinopoiskIDQ := document.Find("a[href*=kinopoisk\\.ru\\/film]").First()
 		if kinopoiskIDQ.Length() > 0 {
 			kinopoiskFilmURL, exists := kinopoiskIDQ.Attr("href")
 			if exists {
@@ -180,7 +191,7 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 
 	// идентификатор IMDb через ссылку на страницу
 	{
-		IMDbQ := doc.Find("a[href*=imdb\\.com\\/title]").First()
+		IMDbQ := document.Find("a[href*=imdb\\.com\\/title]").First()
 		if IMDbQ.Length() > 0 {
 			IMDbURL, exists := IMDbQ.Attr("href")
 			if exists {
@@ -193,5 +204,6 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 		}
 	}
 
+	res.RawPage = rawPage
 	return &res, nil
 }
