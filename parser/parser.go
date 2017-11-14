@@ -120,12 +120,7 @@ type TopicMeta struct {
 }
 
 func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
-	rawPage := RawPage{}
-	buf := bytes.NewBuffer(nil)
-	rawPage.Body = buf
-
-	tee := io.TeeReader(r, buf)
-	document, err := goquery.NewDocumentFromReader(tee)
+	document, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		return nil, err
 	}
@@ -204,6 +199,17 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 		}
 	}
 
-	res.RawPage = rawPage
+	topicBody := document.Find("#topic_main>tbody:nth-child(2)").First()
+	if topicBody.Length() == 0 {
+		panic("unknown error")
+	}
+
+	htmlText, err := topicBody.Html()
+	if  err != nil {
+		return nil, err
+	}
+
+	res.RawPage.Body = bytes.NewBufferString(htmlText)
+
 	return &res, nil
 }

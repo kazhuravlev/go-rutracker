@@ -47,6 +47,6 @@ func TestParser_ParseTopicPage(t *testing.T) {
 	assert.Nil(t, err)
 	require.NotNil(t, res)
 
-	exp := []byte("<!DOCTYPE html><!-- saved from url=(0051)https://rutracker.org/forum/viewtopic.php?t=5429672 -->")
+	exp := []byte(`<tr><td class="poster_info td1 hide-for-print"><a id="73528050">`)
 	assert.Equal(t, exp, res[:len(exp)])
 }
