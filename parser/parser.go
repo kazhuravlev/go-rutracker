@@ -200,14 +200,16 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 		}
 	}
 
-	topicBody := document.Find("#topic_main>tbody:nth-child(2)").First()
-	if topicBody.Length() == 0 {
-		panic("unknown error")
-	}
+	var htmlText string
+	{
+		topicBody := document.Find("#topic_main>tbody:nth-child(2)").First()
+		if topicBody.Length() > 0 {
+			htmlText, err = topicBody.Html()
+			if err != nil {
+				return nil, err
+			}
 
-	htmlText, err := topicBody.Html()
-	if err != nil {
-		return nil, err
+		}
 	}
 
 	res.RawPage.Body = transform.NewReader(strings.NewReader(htmlText), charmap.Windows1251.NewDecoder())
