@@ -200,6 +200,43 @@ func (p *Parser) ParseTopicPage(r io.Reader) (*TopicMeta, error) {
 		}
 	}
 
+	// кол-во сидов
+	{
+		seedersQ := document.Find(".forumline.dl_list.hide-for-print .seed b").First()
+		if seedersQ.Length() > 0 {
+			seedersVal := seedersQ.Text()
+			if seedersVal != "" {
+				seeders, err := strconv.Atoi(strings.Trim(seedersVal, " "))
+				if err == nil {
+					res.Seeders = seeders
+				}
+			}
+		}
+	}
+
+	// кол-во личей
+	{
+		leechersQ := document.Find(".forumline.dl_list.hide-for-print .leech b").First()
+		if leechersQ.Length() > 0 {
+			leechersVal := leechersQ.Text()
+			if leechersVal != "" {
+				leechers, err := strconv.Atoi(strings.Trim(leechersVal, " "))
+				if err == nil {
+					res.Leechers = leechers
+				}
+			}
+		}
+	}
+
+	// заголовок и url
+	{
+		titleQ := document.Find("#topic-title").First()
+		if titleQ.Length() > 0 {
+			res.URL, _ = titleQ.Attr("href")
+			res.Title = titleQ.Text()
+		}
+	}
+
 	var htmlText string
 	{
 		topicBody := document.Find("#topic_main>tbody:nth-child(2)").First()

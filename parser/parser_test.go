@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"testing"
 	"github.com/kazhuravlev/go-rutracker/parser"
-
 )
 
 func TestParser_ParseCatalog(t *testing.T) {
@@ -43,6 +42,10 @@ func TestParser_ParseTopicPage(t *testing.T) {
 	assert.Equal(t, "magnet:THIS_IS_TEST_LINK", topic.MagnetLink)
 	assert.Equal(t, "843231", topic.KinopoiskID)
 	assert.Equal(t, "tt4176370", topic.IMDbID)
+	assert.Equal(t, "http://my-url", topic.URL)
+	assert.Equal(t, "My topic", topic.Title)
+	assert.Equal(t, 100, topic.Leechers)
+	assert.Equal(t, 200, topic.Seeders)
 
 	res, err := ioutil.ReadAll(topic.Body)
 	assert.Nil(t, err)
