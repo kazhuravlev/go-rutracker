@@ -66,7 +66,7 @@ type FullTopic struct {
 	Hash     string
 	ForumID  string
 	AuthorID string
-	Size     int
+	Size     float64
 	Seeders  int
 	Title    string
 }
