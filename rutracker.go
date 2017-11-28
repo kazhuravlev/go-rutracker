@@ -66,7 +66,7 @@ type FullTopic struct {
 	Hash     string
 	ForumID  string
 	AuthorID string
-	Size     float64
+	Size     int
 	Seeders  int
 	Title    string
 }
@@ -76,7 +76,7 @@ type respFullTopicList struct {
 		InfoHash       string `json:"info_hash"`        //"info_hash": "658EDAB6AF0B424E62FEFEC0E39DBE2AC55B9AE3",
 		ForumId        int    `json:"forum_id"`         //"forum_id": 9,
 		AuthorID       int    `json:"poster_id"`        //"poster_id": 670,
-		Size           int    `json:"size"`             //"size": 5020938240,
+		Size           float64    `json:"size"`             //"size": 5020938240,
 		RegTime        int    `json:"reg_time"`         //"reg_time": 1112928696,
 		TorStatus      int    `json:"tor_status"`       //"tor_status": 2,
 		Seeders        int    `json:"seeders"`          //"seeders": 1,
@@ -213,7 +213,7 @@ func (c *Client) GetFullTopic(topicIDs []string) ([]FullTopic, error) {
 			ID:       topicID,
 			Seeders:  info.Seeders,
 			Title:    html.UnescapeString(info.TopicTitle),
-			Size:     info.Size,
+			Size:     int(info.Size),
 			ForumID:  strconv.Itoa(info.ForumId),
 			Hash:     info.InfoHash,
 			AuthorID: strconv.Itoa(info.AuthorID),
