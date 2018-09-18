@@ -3,14 +3,14 @@ package parser
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
+	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/text/transform"
 	"io"
 	"net/url"
 	"path"
 	"strconv"
 	"strings"
-	"golang.org/x/text/encoding/charmap"
-	"golang.org/x/text/transform"
 )
 
 var (
