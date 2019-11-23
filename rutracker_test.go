@@ -1,11 +1,11 @@
 package rutracker_test
 
 import (
-	"testing"
+	"fmt"
 	"github.com/kazhuravlev/go-rutracker"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"fmt"
+	"testing"
 )
 
 func TestClient_GetForumTree(t *testing.T) {
@@ -45,7 +45,7 @@ func TestClient_GetFullTopic(t *testing.T) {
 	}
 	require.True(t, len(topics) >= 3)
 
-	fullTopics, err := c.GetFullTopic([]string{topics[0].ID,topics[1].ID,topics[2].ID})
+	fullTopics, err := c.GetFullTopic([]string{topics[0].ID, topics[1].ID, topics[2].ID})
 	fmt.Println(err)
 	assert.Nil(t, err)
 	require.NotNil(t, fullTopics)

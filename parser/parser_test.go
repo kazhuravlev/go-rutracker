@@ -3,11 +3,11 @@ package parser_test
 import (
 	"bytes"
 	"fmt"
+	"github.com/kazhuravlev/go-rutracker/parser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"testing"
-	"github.com/kazhuravlev/go-rutracker/parser"
 )
 
 func TestParser_ParseCatalog(t *testing.T) {
