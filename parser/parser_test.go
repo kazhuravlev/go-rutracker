@@ -3,7 +3,7 @@ package parser_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/kazhuravlev/go-rutracker/parser"
+	"github.com/kazhuravlev/go-rutracker/v2/parser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"

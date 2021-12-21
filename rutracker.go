@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/kazhuravlev/go-rutracker/parser"
+	"github.com/kazhuravlev/go-rutracker/v2/parser"
 	"html"
 	"net/http"
 	"net/url"
