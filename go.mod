@@ -1,4 +1,4 @@
-module github.com/kazhuravlev/go-rutracker
+module github.com/kazhuravlev/go-rutracker/v2.0.1
 
 go 1.13
 
